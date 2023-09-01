@@ -1,0 +1,275 @@
+@import url("https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css");
+
+body {
+  margin-top: 10px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  /* background-color: #F8F8FF; */
+  }
+
+  header{
+    float:left;
+    width:875px;
+    height:100px;
+    background-color:#333;                          
+    font-family:Arial, Helvetica, sans-serif;       
+    font-style:normal;
+    font-size:30px;                                      
+    padding:50px 0 5px 25px;
+    color:#FC0;                                         
+    }
+
+    /* Style the footer */
+    .footer {
+      float:left;
+      width:875px;
+      height:100px;
+      background-color:#333;                          
+      font-family:Arial, Helvetica, sans-serif;       
+      font-style:normal;
+      font-size:30px;                                      
+      padding:50px 0 5px 25px;
+      color:#FC0;                                         
+}
+
+.row {
+  display: flex;
+}
+
+/* Create three unequal columns that sits next to each other */
+.column {
+  float: left;
+  padding: 10px;
+  text-align: left;
+  border-radius: 10px;
+}
+
+/* Left and right column */
+.column.side {
+  width:20%;
+  text-align: center; 
+  background-color: #e0daf565;
+  border-radius: 10px;
+}
+
+/* Middle column */
+.column.middle {
+  width: 60%;
+  /* background-color: hsla(272, 68%, 86%, 0.255); */
+  border-radius: 10px;
+}
+
+.panel.texts{
+  padding: 20px;
+  font-size: 35px;
+}
+
+.separator {
+  clear:both;
+  width:875px;
+  height:30px;
+  background-color:#FC0;
+  font-family:Arial, Helvetica, sans-serif;
+  font-weight:normal;
+  font-size:12px;
+  color:#333;
+  padding:20px 0 0 25px;
+}
+
+@media (max-width: 800px) {
+  nav, article {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.custom-col{
+  width: 10%;
+}
+
+.custom_side_col{
+  width: 15%;
+}
+
+.commsdataholder {
+  width: 400;
+  height: 385px;
+  /* background-color: #b9b3cca3; */
+  display: grid;
+  grid-template-columns: fit-content(2ch) fit-content(4ch) fit-content(8ch) fit-content(8ch);
+  font-size: small;
+
+  margin-right: -5px;
+  margin-left: -35px;
+  margin-top: 3%;
+
+  border-radius: 25px;
+  border: 2px solid rgb(22, 11, 35);
+}
+
+.mydataholder{
+  width: 400;
+  height: 385px;
+  /* background-color: #b9b3cca3; */
+  display: grid;
+  grid-template-columns: fit-content(2ch) fit-content(4ch) fit-content(8ch) fit-content(8ch);
+  font-size: small;
+
+  margin-right: -5px;
+  margin-left: -35px;
+  margin-bottom: -5%;
+
+  border-radius: 25px;
+  border: 2px solid rgb(22, 11, 35);
+}
+
+.dataholderitem{
+  width: fit-content;
+  margin-left: 10px;
+  margin-top: 20px;
+  height: fit-content;
+  /* background-color: #b9b3cca3; */
+}
+
+/* x and y axis lines */
+.discretecouplebox{
+  border-bottom-style: solid;
+  border-left-style: solid;
+  width:fit-content;
+}
+
+.dataholderitem:hover {
+  width: fit-content;
+  height: 100px;
+  z-index: 999;
+  box-shadow: 0.25em 0.25em 0 0;
+  background-color: blueviolet;
+  border-color: darkgray;
+  cursor: pointer;
+  transition: linear 10s 10s;
+  transition-property: width;
+}
+
+.dataholderitemClicked {
+  width: fit-content;
+  height: 100px;
+  z-index: 999;
+  box-shadow: 0.25em 0.25em 0 0;
+  background-color: blueviolet;
+  border-color: green;
+  cursor: pointer;
+  transition: linear 10s 10s;
+  transition-property: width;
+}
+
+.xLabels{
+  text-align: center;
+  font-size: large;
+}
+
+.discretecouplelabels{
+  text-orientation: mixed;
+  text-align: center;
+}
+
+.yLabels{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  writing-mode: vertical-rl;
+  min-height: 22.75em;
+  line-height: 1em;
+}
+
+.img {
+  width: 60px;
+  height: 90px;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.imgcol{
+  float: center;
+  width: 25%;
+  padding: 10px;
+}
+
+.imgrightpanel{
+  width: 80%;
+  height: 90%;
+}
+
+.btn-container{
+  display: flex;
+  flex-direction: 'row';
+  align-items: center;
+  background-color: #fff;
+  padding: 30px 50px;
+  border-radius: 12px;
+}
+ 
+.modal {
+  font-size: 12px;
+  width: 250px;
+}
+
+.modal.header {
+  width: 100%;
+  border-bottom: 1px solid gray;
+  font-size: 18px;
+  text-align: center;
+  padding: 5px;
+}
+.modal.content {
+  width: 100%;
+  padding: 10px 5px;
+}
+.modal.actions {
+  width: 100%;
+  padding: 10px 5px;
+  margin: auto;
+  text-align: center;
+}
+.modal.close {
+  cursor: pointer;
+  position: absolute;
+  display: block;
+  padding: 2px 5px;
+  line-height: 20px;
+  right: -10px;
+  top: -10px;
+  font-size: 24px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #cfcece;
+}
+
+ul.no-bullets {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: white;
+  border: 1px solid black;
+}
+
+.my-container {
+  padding-bottom: 20px; /* Adjust the value as per your requirement */
+}
+
+/* CSS for SingleScaleGraph */
+canvas {
+  background-color: beige; 
+  width: 100%;
+  height: auto;
+  border: 1px solid black;
+}
