@@ -17,10 +17,6 @@ export default function MovieRatingPage(props) {
 	console.log(state.loc);
 
 	const [ratedMoviesData, setRatedMoviesData] = useState([]);
-	// const [ratedMovies, setRatedMovies] = useState([]);
-	// const [movies, setMovies] = useState([]);
-
-	// const [ratedMovieCount, setRatedMovieCount] = useState(0);
 	const [buttonDisabled, setButtonDisabled] = useState(true);
 
 	const [loading, setLoading] = useState(false);
@@ -37,57 +33,6 @@ export default function MovieRatingPage(props) {
 			{ state: { recType: recType, ratings: ratedMoviesData } },
 			{ replace: true });
 	}
-
-
-	// const rateMoviesHandler = (newRating, idstr) => {
-	// 	const movieid = parseInt(idstr);
-	// 	const isNew = !ratedMoviesData.some(item =>
-	// 		item.item_id === movieid);
-
-	// 	let newrefMovies = [...movies];
-	// 	let newrefRatedMovies = [...ratedMovies];
-	// 	let newrefRatedMoviesData = [...ratedMoviesData];
-
-	// 	let updatedmovie = newrefMovies.find(item =>
-	// 		item.movie_id === movieid);
-	// 	updatedmovie.rating = newRating;
-	// 	if (isNew) {
-	// 		let updatevisited = [...ratedMoviesData, {
-	// 			item_id: movieid, rating: newRating
-	// 		}];
-	// 		let updaterated = [...ratedMovies, updatedmovie];
-	// 		setRatedMovies(updaterated);
-	// 		setRatedMoviesData(updatevisited);
-	// 		setRatedMovieCount(updatevisited.length);
-	// 		setButtonDisabled(updatevisited.length < 10);
-	// 	} else {
-	// 		let updatevisited = newrefRatedMoviesData.find(item =>
-	// 			item.item_id === movieid);
-	// 		updatevisited.rating = newRating;
-
-	// 		let updaterated = newrefRatedMovies.find(item =>
-	// 			item.movie_id === movieid);
-	// 		updaterated.rating = newRating;
-	// 		setRatedMovies(newrefRatedMovies);
-	// 		setRatedMoviesData(newrefRatedMoviesData);
-	// 	}
-	// 	setMovies(newrefMovies);
-	// }
-
-
-
-	// useEffect(() => {
-	// 	const limit = itemsPerPage * 2;
-	// 	let randomMovies = [];
-	// 	let moviearr = [...movieIds];
-	// 	for (let i = 0; i < limit; i++) {
-	// 		let randomMovie = moviearr.splice(Math.floor(Math.random()
-	// 			* moviearr.length), 1);
-	// 		randomMovies.push(...randomMovie);
-	// 	}
-	// 	setMoviesToFetch(randomMovies);
-	// }, [movieIds]);
-
 
 	useEffect(() => {
 		const getAllMovieIds = async () => {

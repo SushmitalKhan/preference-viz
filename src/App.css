@@ -1,36 +1,35 @@
-@import url("https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css");
+/* @import url("https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css"); */
 
-body {
+/* body {
   margin-top: 10px;
   margin-right: 20px;
   margin-bottom: 10px;
   margin-left: 20px;
-  /* background-color: #F8F8FF; */
-  }
+} */
 
-  header{
-    float:left;
-    width:875px;
-    height:100px;
-    background-color:#333;                          
-    font-family:Arial, Helvetica, sans-serif;       
-    font-style:normal;
-    font-size:30px;                                      
-    padding:50px 0 5px 25px;
-    color:#FC0;                                         
-    }
+header {
+  float: left;
+  width: 875px;
+  height: 100px;
+  background-color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 30px;
+  padding: 50px 0 5px 25px;
+  color: #FC0;
+}
 
-    /* Style the footer */
-    .footer {
-      float:left;
-      width:875px;
-      height:100px;
-      background-color:#333;                          
-      font-family:Arial, Helvetica, sans-serif;       
-      font-style:normal;
-      font-size:30px;                                      
-      padding:50px 0 5px 25px;
-      color:#FC0;                                         
+/* Style the footer */
+.footer {
+  float: left;
+  width: 875px;
+  height: 100px;
+  background-color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 30px;
+  padding: 50px 0 5px 25px;
+  color: #FC0;
 }
 
 .row {
@@ -47,8 +46,8 @@ body {
 
 /* Left and right column */
 .column.side {
-  width:20%;
-  text-align: center; 
+  width: 20%;
+  text-align: center;
   background-color: #e0daf565;
   border-radius: 10px;
 }
@@ -60,35 +59,37 @@ body {
   border-radius: 10px;
 }
 
-.panel.texts{
+.panel.texts {
   padding: 20px;
   font-size: 35px;
 }
 
 .separator {
-  clear:both;
-  width:875px;
-  height:30px;
-  background-color:#FC0;
-  font-family:Arial, Helvetica, sans-serif;
-  font-weight:normal;
-  font-size:12px;
-  color:#333;
-  padding:20px 0 0 25px;
+  clear: both;
+  width: 875px;
+  height: 30px;
+  background-color: #FC0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 12px;
+  color: #333;
+  padding: 20px 0 0 25px;
 }
 
 @media (max-width: 800px) {
-  nav, article {
+
+  nav,
+  article {
     width: 100%;
     height: auto;
   }
 }
 
-.custom-col{
+.custom-col {
   width: 10%;
 }
 
-.custom_side_col{
+.custom_side_col {
   width: 15%;
 }
 
@@ -108,7 +109,7 @@ body {
   border: 2px solid rgb(22, 11, 35);
 }
 
-.mydataholder{
+.mydataholder {
   width: 400;
   height: 385px;
   /* background-color: #b9b3cca3; */
@@ -124,7 +125,7 @@ body {
   border: 2px solid rgb(22, 11, 35);
 }
 
-.dataholderitem{
+.dataholderitem {
   width: fit-content;
   margin-left: 10px;
   margin-top: 20px;
@@ -133,10 +134,10 @@ body {
 }
 
 /* x and y axis lines */
-.discretecouplebox{
+.discretecouplebox {
   border-bottom-style: solid;
   border-left-style: solid;
-  width:fit-content;
+  width: fit-content;
 }
 
 .dataholderitem:hover {
@@ -163,44 +164,44 @@ body {
   transition-property: width;
 }
 
-.xLabels{
+.xLabels {
   text-align: center;
   font-size: large;
 }
 
-.discretecouplelabels{
+.discretecouplelabels {
   text-orientation: mixed;
   text-align: center;
 }
 
-.yLabels{
-  display:flex;
-  justify-content:center;
-  align-items:center;
+.yLabels {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   writing-mode: vertical-rl;
   min-height: 22.75em;
   line-height: 1em;
 }
 
-.img {
+/* .img {
   width: 60px;
   height: 90px;
   opacity: 0.8;
   cursor: pointer;
-}
+} */
 
-.imgcol{
+.imgcol {
   float: center;
   width: 25%;
   padding: 10px;
 }
 
-.imgrightpanel{
+.imgrightpanel {
   width: 80%;
   height: 90%;
 }
 
-.btn-container{
+.btn-container {
   display: flex;
   flex-direction: 'row';
   align-items: center;
@@ -208,7 +209,7 @@ body {
   padding: 30px 50px;
   border-radius: 12px;
 }
- 
+
 .modal {
   font-size: 12px;
   width: 250px;
@@ -221,16 +222,19 @@ body {
   text-align: center;
   padding: 5px;
 }
+
 .modal.content {
   width: 100%;
   padding: 10px 5px;
 }
+
 .modal.actions {
   width: 100%;
   padding: 10px 5px;
   margin: auto;
   text-align: center;
 }
+
 .modal.close {
   cursor: pointer;
   position: absolute;
@@ -263,13 +267,22 @@ ul.no-bullets {
 }
 
 .my-container {
-  padding-bottom: 20px; /* Adjust the value as per your requirement */
+  padding-bottom: 20px;
+  /* Adjust the value as per your requirement */
 }
 
 /* CSS for SingleScaleGraph */
 canvas {
-  background-color: beige; 
+  background-color: beige;
   width: 100%;
   height: auto;
   border: 1px solid black;
+  padding: 0 !important;
+}
+
+.imgRightPanel {
+  /* width: 162px; */
+  width: 80%;
+  /* height: 252px; */
+  margin: 0.5em auto;
 }

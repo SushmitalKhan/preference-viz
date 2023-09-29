@@ -1,38 +1,219 @@
-import { useState, useEffect } from 'react';
-import { imgurl } from '../middleware/requests';
+import { useEffect, useMemo, useState } from "react";
+import { imgurl } from "../middleware/requests";
 
+const posterWidth = 54;
+const posterHeight = 81;
 
-export default function SingleScaleGraph({ items, itemInfo, xkey, scaleFactor,
-	label }) {
+const svgFontHeight = 12;
 
-	const [canvasId, setCanvasId] = useState(
-		`singleScaleGraph_${String(label).replace(' ', '_')}`);
-	const [imageCache, setImageCache] = useState({});
+const svgDrawingBaseline = posterHeight;
+
+const ticksCount = 5;
+const svgTicksColor = "rgb(0, 0, 0)";
+
+const xAxisOffset = posterWidth / 2;
+
+const navDotRadius = 4;
+const navDotColor = "rgb(144, 81, 207)"
+const navDotXThreshold = navDotRadius;
+
+// const navLanes = 8;
+const navLaneHeight = 2 * navDotRadius + 3;
+
+export default function SingleScaleGraph({ graphID, width, height, data, dataInfo, pairingID, ...props }) {
+
+	const [collision, setCollision] = useState(false);
+	const [navLanes, setNavLanes] = useState(3);
 
 	useEffect(() => {
-		const canvas = document.getElementById(canvasId);
-		const ctx = canvas.getContext('2d');
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		let imgCache = {};
+		if (collision) {
+			setNavLanes(navLanes + 1);
+			setCollision(false);
+		}
+	}, [collision, navLanes]);
 
-		items.map((item, index) => {
-			const img = new Image();
-			img.onload = () => {
-				ctx.drawImage(img, item[xkey] * scaleFactor, 0, 27, 45);
-			};
-			img.src = imgurl(itemInfo[item.item_id].poster_identifier);
-			imgCache[item.item_id] = img;
-			console.log(item[xkey], item[xkey] * scaleFactor);
-			console.log(imgCache);
-			return null;
-		})
+	const sortedData = useMemo(() => {
+		return data.length > 0 ? data.sort((a, b) =>
+			(a.score > b.score) ? 1 : -1) : [];
+	}, [data]);
 
-	}, [items, itemInfo, xkey, scaleFactor, canvasId]);
+	const xSubdivWidth = useMemo(() => {
+		return (width - 2 * xAxisOffset) / (ticksCount - 1);
+	}, [width]);
 
+
+	const yAugmentedData = useMemo(() => {
+		// console.log("No of lanes: ", navLanes);
+		if (sortedData.length > 0) {
+			let augmentedData = [];
+			// We keep track of the last x position of each lane
+			// We will start at the top lane and move down the y axis
+			let sweepingX = Array(navLanes).fill(xAxisOffset);
+			const cy = svgDrawingBaseline + (5 * posterHeight / 4)
+				+ (navLanes * navLaneHeight) / 2;
+
+			sortedData.forEach((d, i) => {
+				const cx = (d.score - 1) * xSubdivWidth + xAxisOffset;
+				d.x = cx;
+				d.y = cy;
+
+				if (i === 0) {
+					augmentedData.push(d);
+					sweepingX[0] = cx + navDotXThreshold;
+					return;
+				}
+				let maxDistance = { dist: 0, lane: 0 };
+				let laneAlternator = 0;
+				for (let j = 0; j < sweepingX.length; j++) {
+					const dist = cx - sweepingX[j];
+					let negMultiplier = Math.pow(-1, j);
+					if (dist > navDotXThreshold) {
+						sweepingX[j] = cx + navDotXThreshold;
+						d.y = cy + ((j - laneAlternator) * navLaneHeight)
+							* negMultiplier;
+						break;
+					} else {
+						if (dist > maxDistance.dist) {
+							maxDistance.dist = dist;
+							maxDistance.lane = j;
+						}
+						if (j === sweepingX.length - 1) {
+							console.log("We have a collision in all lanes");
+							setCollision(true);
+							// We have a collision in all lanes so we
+							// need to add a new lane.
+							// We add the navigation dot to the lane where the
+							// distance is the largest
+							sweepingX[maxDistance.lane] = cx + navDotXThreshold;
+							d.y = cy + (maxDistance.lane * navLaneHeight)
+								* Math.pow(-1, maxDistance.lane);
+						}
+					}
+					laneAlternator += negMultiplier < 0 ? 1 : 0;
+				}
+
+				augmentedData.push(d);
+			});
+			return augmentedData;
+		}
+	}, [sortedData, xSubdivWidth, navLanes]);
+
+	const onItemHover = (evt, effect) => {
+		let target = evt.target;
+		const item_id = target.getAttribute("item_id");
+		if (target.getAttribute("item_type") === "nav") {
+			target = document.getElementById(
+				`img-${graphID}-${item_id}`);
+		}
+
+		imgHoverEffect(target, effect);
+
+		if (pairingID) {
+			const pairingTarget = document.getElementById(
+				`img-${pairingID}-${item_id}`);
+			imgHoverEffect(pairingTarget, effect);
+		}
+
+		if (props.onItemHover) { props.onItemHover(item_id); }
+	}
+
+	const imgHoverEffect = (target, effect) => {
+		switch (effect) {
+			case "out":
+				const itemScore = target.getAttribute("item_score");
+				target = transformImg(target, posterWidth, posterHeight,
+					(itemScore - 1) * xSubdivWidth,
+					svgDrawingBaseline);
+				break;
+			case "in":
+				const parent = target.parentNode;
+				target = transformImg(target, posterWidth * 2, posterHeight * 2,
+					target.getAttribute("x") - posterWidth / 2,
+					target.getAttribute("y") - posterHeight);
+				parent.appendChild(target);
+				break;
+			default:
+				break;
+		}
+	}
+
+	const transformImg = (target, w, h, x, y) => {
+		target.setAttribute("width", w);
+		target.setAttribute("height", h);
+		target.setAttribute("x", x);
+		target.setAttribute("y", y);
+
+		return target;
+	}
+
+	const getNavLaneYPos = (lane) => {
+		return svgDrawingBaseline + (5 * posterHeight / 4) +
+			(navLanes % 2 === 0 ?
+				(lane * (navLaneHeight + navLaneHeight) / 2)
+				: (lane * (navLaneHeight) + navLaneHeight / 2))
+	}
 
 	return (
-		<canvas id={canvasId}
-			width="500" height="100">
-		</canvas>
+		<svg id={graphID} width={width} height={height}>
+			{yAugmentedData.map((d, i) =>
+				<>
+					<circle key={`circle-${graphID}-${d.item_id}`}
+						id={`circle-${d.item_id}`}
+						cx={(d.score - 1) * xSubdivWidth + xAxisOffset}
+						cy={d.y} r={navDotRadius} fill={navDotColor}
+						cursor={"pointer"}
+						item_id={d.item_id} item_score={d.score}
+						item_type={"nav"}
+						onMouseEnter={evt => onItemHover(evt, "in")}
+						onMouseLeave={evt => onItemHover(evt, "out")} />
+					<image key={`img-${graphID}-${d.item_id}`}
+						id={`img-${graphID}-${d.item_id}`}
+						width={posterWidth} height={posterHeight}
+						x={(d.score - 1) * xSubdivWidth}
+						y={svgDrawingBaseline}
+						xlinkHref={imgurl(dataInfo[d.item_id].poster_identifier)}
+						cursor={"pointer"}
+						item_id={d.item_id} item_score={d.score}
+						item_type={"img"}
+						onMouseEnter={evt => onItemHover(evt, "in")}
+						onMouseLeave={evt => onItemHover(evt, "out")}
+					/>
+				</>
+			)}
+			<line x1={xAxisOffset} y1={height - svgFontHeight * 2}
+				x2={width - xAxisOffset} y2={height - svgFontHeight * 2}
+				style={{ stroke: svgTicksColor, strokeWidth: "2" }} />
+			{
+				[...Array(ticksCount).keys()].map(i =>
+					<>
+						<line key={`xAxis-${i}`}
+							x1={(i) * xSubdivWidth + xAxisOffset}
+							y1={height - svgFontHeight * 2}
+							x2={(i) * xSubdivWidth + xAxisOffset}
+							y2={height - 50}
+							style={{
+								stroke: svgTicksColor, strokeWidth: "2"
+							}} />
+						<text key={`xAxisLabel-${i}`}
+							x={(i) * xSubdivWidth + xAxisOffset}
+							y={height - svgFontHeight}
+							textAnchor="middle" fill={svgTicksColor}
+							fontSize={svgFontHeight}>
+							{i + 1}
+						</text>
+					</>
+				)
+			}
+			{
+				[...Array(navLanes).keys()].map(i =>
+					<line key={`navLane-${i}`}
+						x1={xAxisOffset} y1={getNavLaneYPos(i)}
+						x2={width - xAxisOffset} y2={getNavLaneYPos(i)}
+						style={{ stroke: svgTicksColor, strokeWidth: "0.25" }} />
+				)
+			}
+			<defs className="itemImg">
+			</defs>
+		</svg >
 	)
 }
