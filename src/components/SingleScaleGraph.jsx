@@ -51,7 +51,6 @@ export default function SingleScaleGraph({ graphID, width, height, data, dataInf
 
 
 	const yAugmentedData = useMemo(() => {
-		// console.log("No of lanes: ", navLanes);
 		if (sortedData.length > 0) {
 			let augmentedData = [];
 			// We keep track of the last x position of each lane
@@ -220,12 +219,12 @@ export default function SingleScaleGraph({ graphID, width, height, data, dataInf
 				[...Array(navLanes).keys()].map(i =>
 					<line key={`navLane-${i}`}
 						x1={getNavGridXPos(0)} y1={getNavGridYPos(i)}
-						x2={getNavGridXPos((ticksCount - 1) * navLaneXDiv)} y2={getNavGridYPos(i)}
+						x2={getNavGridXPos(navGridXMax)} y2={getNavGridYPos(i)}
 						style={{ stroke: svgTicksColor, strokeWidth: "0.25" }} />
 				)
 			}
 			{
-				[...Array((ticksCount - 1) * navLaneXDiv + 1)
+				[...Array(navGridXMax + 1)
 					.keys()].map(i =>
 						<line key={`navLaneXDiv-${i}`}
 							x1={getNavGridXPos(i)} y1={getNavGridYPos(0)}
