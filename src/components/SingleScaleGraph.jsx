@@ -10,6 +10,7 @@ const svgDrawingBaseline = posterHeight;
 
 const ticksCount = 5;
 const svgTicksColor = "rgb(0, 0, 0)";
+const tickHeight = 10;
 
 const xAxisOffset = posterWidth / 2;
 
@@ -20,10 +21,13 @@ const navDotXThreshold = navDotRadius;
 // const navLanes = 8;
 const navLaneHeight = 2 * navDotRadius + 3;
 
-export default function SingleScaleGraph({ graphID, width, height, data, dataInfo, pairingID, ...props }) {
 
+export default function SingleScaleGraph({ graphID, width, height, data, dataInfo, pairingID, ...props }) {
+	
 	const [collision, setCollision] = useState(false);
-	const [navLanes, setNavLanes] = useState(3);
+	const [navLanes, setNavLanes] = useState(8);
+	
+	const navLaneXDiv = 20; // We might want to make this dynamic with window size
 
 	useEffect(() => {
 		if (collision) {
@@ -40,6 +44,10 @@ export default function SingleScaleGraph({ graphID, width, height, data, dataInf
 	const xSubdivWidth = useMemo(() => {
 		return (width - 2 * xAxisOffset) / (ticksCount - 1);
 	}, [width]);
+
+	const navGridXMax = useMemo(() => {
+		return (ticksCount - 1) * navLaneXDiv;
+	}, [navLaneXDiv]);
 
 
 	const yAugmentedData = useMemo(() => {
@@ -146,11 +154,15 @@ export default function SingleScaleGraph({ graphID, width, height, data, dataInf
 		return target;
 	}
 
-	const getNavLaneYPos = (lane) => {
+	const getNavGridYPos = (lane) => {
 		return svgDrawingBaseline + (5 * posterHeight / 4) +
 			(navLanes % 2 === 0 ?
 				(lane * (navLaneHeight + navLaneHeight) / 2)
 				: (lane * (navLaneHeight) + navLaneHeight / 2))
+	}
+
+	const getNavGridXPos = (subDivMark) => {
+		return xAxisOffset + subDivMark * xSubdivWidth / navLaneXDiv;
 	}
 
 	return (
@@ -190,7 +202,7 @@ export default function SingleScaleGraph({ graphID, width, height, data, dataInf
 							x1={(i) * xSubdivWidth + xAxisOffset}
 							y1={height - svgFontHeight * 2}
 							x2={(i) * xSubdivWidth + xAxisOffset}
-							y2={height - 50}
+							y2={height - tickHeight - svgFontHeight * 2}
 							style={{
 								stroke: svgTicksColor, strokeWidth: "2"
 							}} />
@@ -207,10 +219,19 @@ export default function SingleScaleGraph({ graphID, width, height, data, dataInf
 			{
 				[...Array(navLanes).keys()].map(i =>
 					<line key={`navLane-${i}`}
-						x1={xAxisOffset} y1={getNavLaneYPos(i)}
-						x2={width - xAxisOffset} y2={getNavLaneYPos(i)}
+						x1={getNavGridXPos(0)} y1={getNavGridYPos(i)}
+						x2={getNavGridXPos((ticksCount - 1) * navLaneXDiv)} y2={getNavGridYPos(i)}
 						style={{ stroke: svgTicksColor, strokeWidth: "0.25" }} />
 				)
+			}
+			{
+				[...Array((ticksCount - 1) * navLaneXDiv + 1)
+					.keys()].map(i =>
+						<line key={`navLaneXDiv-${i}`}
+							x1={getNavGridXPos(i)} y1={getNavGridYPos(0)}
+							x2={getNavGridXPos(i)} y2={getNavGridYPos(navLanes - 1)}
+							style={{ stroke: svgTicksColor, strokeWidth: "0.25" }} />
+					)
 			}
 			<defs className="itemImg">
 			</defs>
