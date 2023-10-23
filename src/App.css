@@ -286,3 +286,9 @@ canvas {
   /* height: 252px; */
   margin: 0.5em auto;
 }
+
+
+li.vizPicker {
+  display: block;
+  margin: 0.5em;
+}

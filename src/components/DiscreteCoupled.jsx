@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import RightPanel from "../components/RightPanel";
+import RightPanel from "./RightPanel";
 
 class DiscreteCoupled extends React.Component {
     constructor(props) {
@@ -235,16 +235,6 @@ class DiscreteCoupled extends React.Component {
                     <div class="col-lg-3 col-md-4 col-sm-12">
                         <RightPanel movie={this.state.activeMovie} />
                     </div>
-                </div>
-
-                <div class=" row">
-                    <header>
-                        <Link to="/surveypage">
-                            <button type="button" class="btn btn-primary btn-light float-right">
-                                Next Page
-                            </button>
-                        </Link>
-                    </header>
                 </div>
             </div>
         )

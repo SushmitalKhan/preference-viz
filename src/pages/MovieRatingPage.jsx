@@ -14,7 +14,7 @@ export default function MovieRatingPage(props) {
 
 	const navigate = useNavigate();
 	const { state } = useLocation();
-	console.log(state.loc);
+	console.log(state.type);
 
 	const [ratedMoviesData, setRatedMoviesData] = useState([]);
 	const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -28,9 +28,15 @@ export default function MovieRatingPage(props) {
 	const [moviesToFetch, setMoviesToFetch] = useState([]);
 
 
-	function handleNavigate(recType, ratedMoviesData, next) {
-		navigate(next,
-			{ state: { recType: recType, ratings: ratedMoviesData } },
+	function handleNavigate(recType, ratedMoviesData, viztype) {
+		navigate("/viz/",
+			{
+				state: {
+					recType: recType,
+					ratings: ratedMoviesData,
+					type: viztype
+				}
+			},
 			{ replace: true });
 	}
 
@@ -41,7 +47,6 @@ export default function MovieRatingPage(props) {
 				.then((newmovies: movie[]) => {
 					console.log("fetched all movie ids", newmovies);
 					setMovieIds(newmovies);
-
 				})
 				.catch((error) => console.log(error));
 		}
@@ -56,7 +61,7 @@ export default function MovieRatingPage(props) {
 		setLoading(true);
 
 		if (ratedMoviesData.length > 0) {
-			handleNavigate(recType, ratedMoviesData, state.loc);
+			handleNavigate(recType, ratedMoviesData, state.type);
 		}
 	}
 

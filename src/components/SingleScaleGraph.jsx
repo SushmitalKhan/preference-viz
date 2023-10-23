@@ -23,10 +23,10 @@ const navLaneHeight = 2 * navDotRadius + 3;
 
 
 export default function SingleScaleGraph({ graphID, width, height, data, dataInfo, pairingID, ...props }) {
-	
+
 	const [collision, setCollision] = useState(false);
 	const [navLanes, setNavLanes] = useState(8);
-	
+
 	const navLaneXDiv = 20; // We might want to make this dynamic with window size
 
 	useEffect(() => {
@@ -165,59 +165,59 @@ export default function SingleScaleGraph({ graphID, width, height, data, dataInf
 	}
 
 	return (
-		<svg id={graphID} width={width} height={height}>
+		<svg key={graphID} id={graphID} width={width} height={height}>
 			{yAugmentedData.map((d, i) =>
-				<>
-					<circle key={`circle-${graphID}-${d.item_id}`}
-						id={`circle-${d.item_id}`}
-						cx={(d.score - 1) * xSubdivWidth + xAxisOffset}
-						cy={d.y} r={navDotRadius} fill={navDotColor}
-						cursor={"pointer"}
-						item_id={d.item_id} item_score={d.score}
-						item_type={"nav"}
-						onMouseEnter={evt => onItemHover(evt, "in")}
-						onMouseLeave={evt => onItemHover(evt, "out")} />
-					<image key={`img-${graphID}-${d.item_id}`}
-						id={`img-${graphID}-${d.item_id}`}
-						width={posterWidth} height={posterHeight}
-						x={(d.score - 1) * xSubdivWidth}
-						y={svgDrawingBaseline}
-						xlinkHref={imgurl(dataInfo[d.item_id].poster_identifier)}
-						cursor={"pointer"}
-						item_id={d.item_id} item_score={d.score}
-						item_type={"img"}
-						onMouseEnter={evt => onItemHover(evt, "in")}
-						onMouseLeave={evt => onItemHover(evt, "out")}
-					/>
-				</>
+				<circle key={`circle-${graphID}-${d.item_id}`}
+					id={`circle-${d.item_id}`}
+					cx={(d.score - 1) * xSubdivWidth + xAxisOffset}
+					cy={d.y} r={navDotRadius} fill={navDotColor}
+					cursor={"pointer"}
+					item_id={d.item_id} item_score={d.score}
+					item_type={"nav"}
+					onMouseEnter={evt => onItemHover(evt, "in")}
+					onMouseLeave={evt => onItemHover(evt, "out")} />
 			)}
-			<line x1={xAxisOffset} y1={height - svgFontHeight * 2}
+			{yAugmentedData.map((d, i) =>
+				<image key={`img-${graphID}-${d.item_id}`}
+					id={`img-${graphID}-${d.item_id}`}
+					width={posterWidth} height={posterHeight}
+					x={(d.score - 1) * xSubdivWidth}
+					y={svgDrawingBaseline}
+					xlinkHref={imgurl(dataInfo[d.item_id].poster_identifier)}
+					cursor={"pointer"}
+					item_id={d.item_id} item_score={d.score}
+					item_type={"img"}
+					onMouseEnter={evt => onItemHover(evt, "in")}
+					onMouseLeave={evt => onItemHover(evt, "out")}
+				/>
+			)}
+			<line key={graphID} x1={xAxisOffset} y1={height - svgFontHeight * 2}
 				x2={width - xAxisOffset} y2={height - svgFontHeight * 2}
 				style={{ stroke: svgTicksColor, strokeWidth: "2" }} />
 			{
 				[...Array(ticksCount).keys()].map(i =>
-					<>
-						<line key={`xAxis-${i}`}
-							x1={(i) * xSubdivWidth + xAxisOffset}
-							y1={height - svgFontHeight * 2}
-							x2={(i) * xSubdivWidth + xAxisOffset}
-							y2={height - tickHeight - svgFontHeight * 2}
-							style={{
-								stroke: svgTicksColor, strokeWidth: "2"
-							}} />
-						<text key={`xAxisLabel-${i}`}
-							x={(i) * xSubdivWidth + xAxisOffset}
-							y={height - svgFontHeight}
-							textAnchor="middle" fill={svgTicksColor}
-							fontSize={svgFontHeight}>
-							{i + 1}
-						</text>
-					</>
-				)
+					<line key={`xAxis-${graphID}-${i}`}
+						x1={(i) * xSubdivWidth + xAxisOffset}
+						y1={height - svgFontHeight * 2}
+						x2={(i) * xSubdivWidth + xAxisOffset}
+						y2={height - tickHeight - svgFontHeight * 2}
+						style={{
+							stroke: svgTicksColor, strokeWidth: "2"
+						}} />
+				)}
+			{[...Array(ticksCount).keys()].map(i =>
+				<text key={`xAxisLabel-${graphID}-${i}`}
+					x={(i) * xSubdivWidth + xAxisOffset}
+					y={height - svgFontHeight}
+					textAnchor="middle" fill={svgTicksColor}
+					fontSize={svgFontHeight}>
+					{i + 1}
+				</text>
+			)
 			}
 			{
 				[...Array(navLanes).keys()].map(i =>
-					<line key={`navLane-${i}`}
+					<line key={`navLane-${graphID}-${i}`}
 						x1={getNavGridXPos(0)} y1={getNavGridYPos(i)}
 						x2={getNavGridXPos(navGridXMax)} y2={getNavGridYPos(i)}
 						style={{ stroke: svgTicksColor, strokeWidth: "0.25" }} />
@@ -226,7 +226,7 @@ export default function SingleScaleGraph({ graphID, width, height, data, dataInf
 			{
 				[...Array(navGridXMax + 1)
 					.keys()].map(i =>
-						<line key={`navLaneXDiv-${i}`}
+						<line key={`navLaneXDiv-${graphID}-${i}`}
 							x1={getNavGridXPos(i)} y1={getNavGridYPos(0)}
 							x2={getNavGridXPos(i)} y2={getNavGridYPos(navLanes - 1)}
 							style={{ stroke: svgTicksColor, strokeWidth: "0.25" }} />

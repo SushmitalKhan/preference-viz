@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import RightPanel from "../components/RightPanel";
+import RightPanel from "./RightPanel";
 
 class DiscreteDecoupled extends React.Component {
     constructor(props) {
