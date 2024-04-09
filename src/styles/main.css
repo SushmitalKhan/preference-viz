@@ -137,3 +137,38 @@ header {
   height: fit-content;
   margin-top: 1em;
 }
+
+.home-nav li{
+  margin: 1em;
+  display: inline-block;
+}
+
+.header-row {
+  margin: 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9b05c;
+  padding: 1em;
+  border-radius: 0.25em;
+}
+
+.content-row {
+  margin: 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ededed;
+  padding: 1em;
+  border-radius: 0.25em;
+}
+
+.footer-row {
+  margin: 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ededed;
+  padding: 1em;
+  border-radius: 0.25em;
+}

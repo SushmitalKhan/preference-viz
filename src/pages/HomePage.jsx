@@ -1,37 +1,49 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Button, Container, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-class HomePage extends React.Component {
-  render() {
-    return (
-      <div>
-        <h2>Movie Preference Visualizations</h2>
-        <h3>Implicit Exploration</h3>
-        <ul>
-          <li><Link to="/ratemovies" state={{ loc: "/contcoupled" }}>
-            Continuous Coupled</Link>
-          </li>
-          <li><Link to="/ratemovies" state={{ loc: "/contdecoupled" }}>
-            Continuous Decoupled</Link>
-          </li>
-          <li><Link to="/ratemovies" state={{ loc: "/disccoupled" }}>
-            Discrete Coupled</Link>
-          </li>
-          <li><Link to="/ratemovies" state={{ loc: "/discdecoupled" }}>
-            Discrete Decoupled</Link>
-          </li>
-        </ul>
+export default function HomePage() {
+	const navigate = useNavigate();
+	return (
+		<Container>
+			<Row className="header-row">
+				<h2>Movie Preference Visualizations</h2>
+			</Row>
+			<Row className="content-row">
+				<p>
+					There two types of displays: implicit and explicit.
+				</p>
+				<ul className="home-nav">
+					<li>
+						<Button onClick={() =>
+							navigate("ratemovies",
+								{ state: { type: "implicit" } },
+								{ replace: true })} >
+							Implicit
+						</Button>
+					</li>
+					<li>
+						<Button onClick={() =>
+							navigate("ratemovies",
+								{ state: { type: "explicit" } },
+								{ replace: true })} >
+							Explicit
+						</Button>
+					</li>
+				</ul>
+				<p>
+					Each type has 4 different visualizations.
+					<ol>
+						<li>Continuous Coupled</li>
+						<li>Continuous Decoupled</li>
+						<li>Discreet Coupled</li>
+						<li>Discreet Decoupled</li>
+					</ol>
+				</p>
+			</Row>
+			<Row className="footer-row">
 
-        <h3>Explicit Exploration</h3>
-        <ul>
-          <li><Link to="/ContdCpld"> Continuous Coupled</Link></li>
-          <li><Link to="/CdExp">Continuous Decoupled</Link></li>
-          <li><Link to="/DcExp">Discrete Coupled</Link></li>
-          <li><Link to="/DdExp">Discrete Decoupled</Link></li>
-        </ul>
-        <li><Link to="/surveypage">Survey Page</Link></li>
-      </div>
-    )
-  }
+			</Row>
+		</Container>
+	)
 }
-export default HomePage

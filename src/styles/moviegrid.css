@@ -15,6 +15,14 @@
 	margin: 0;
 }
 
+#gallery-left-btn {
+	float: inline-start;
+}
+
+#gallery-right-btn {
+	float: inline-end;
+}
+
 .grid-container {
 	display: grid;
 	grid-template-columns: auto auto auto auto auto auto auto auto;

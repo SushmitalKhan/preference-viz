@@ -14,7 +14,6 @@ export default function MovieRatingPage(props) {
 
 	const navigate = useNavigate();
 	const { state } = useLocation();
-	console.log(state.loc);
 
 	const [ratedMoviesData, setRatedMoviesData] = useState([]);
 	const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -28,9 +27,15 @@ export default function MovieRatingPage(props) {
 	const [moviesToFetch, setMoviesToFetch] = useState([]);
 
 
-	function handleNavigate(recType, ratedMoviesData, next) {
-		navigate(next,
-			{ state: { recType: recType, ratings: ratedMoviesData } },
+	function handleNavigate(recType, ratedMoviesData, viztype) {
+		navigate("/viz/",
+			{
+				state: {
+					recType: recType,
+					ratings: ratedMoviesData,
+					type: viztype
+				}
+			},
 			{ replace: true });
 	}
 
@@ -39,9 +44,7 @@ export default function MovieRatingPage(props) {
 			get('ers/movies/ids/')
 				.then((response): Promise<movie[]> => response.json())
 				.then((newmovies: movie[]) => {
-					console.log("fetched all movie ids", newmovies);
 					setMovieIds(newmovies);
-
 				})
 				.catch((error) => console.log(error));
 		}
@@ -56,7 +59,7 @@ export default function MovieRatingPage(props) {
 		setLoading(true);
 
 		if (ratedMoviesData.length > 0) {
-			handleNavigate(recType, ratedMoviesData, state.loc);
+			handleNavigate(recType, ratedMoviesData, state.type);
 		}
 	}
 
@@ -65,17 +68,20 @@ export default function MovieRatingPage(props) {
 
 	return (
 		<>
+			<Row className="header-row">
+				<h2>Movie Gallery</h2>
+			</Row>
 			{loading ?
 				<LoadingScreen loading={loading} loadingMessage={loadingMsg} />
 				:
 				<Container>
-					<Row>
+					<Row className="content-row">
 						<MovieGrid
 							dataCallback={setRatedMoviesData}
 							movieIds={movieIds}
 							itemsPerPage={itemsPerPage} />
 					</Row>
-					<Row>
+					<Row className="footer-row">
 						<div className="jumbotron jumbotron-footer"
 							style={{ display: "flex" }}>
 							<RankHolder count={ratedMoviesData.length} />

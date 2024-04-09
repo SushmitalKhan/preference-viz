@@ -137,11 +137,9 @@ header {
 .discretecouplebox {
   border-bottom-style: solid;
   border-left-style: solid;
-  width: fit-content;
 }
 
 .dataholderitem:hover {
-  width: fit-content;
   height: 100px;
   z-index: 999;
   box-shadow: 0.25em 0.25em 0 0;
@@ -153,7 +151,6 @@ header {
 }
 
 .dataholderitemClicked {
-  width: fit-content;
   height: 100px;
   z-index: 999;
   box-shadow: 0.25em 0.25em 0 0;
@@ -285,4 +282,10 @@ canvas {
   width: 80%;
   /* height: 252px; */
   margin: 0.5em auto;
+}
+
+
+li.vizPicker {
+  display: block;
+  margin: 0.5em;
 }
