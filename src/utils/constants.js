@@ -11,3 +11,6 @@ export const VizLabels = {
 	3: 'Discrete Coupled',
 	4: 'Discrete Decoupled'
 }
+
+export const LIKE_CUTOFF = 3;
+export const DISLIKE_CUTOFF = 3;

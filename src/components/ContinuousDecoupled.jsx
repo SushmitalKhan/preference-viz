@@ -4,6 +4,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import RightPanel from "./RightPanel";
 import SingleScaleGraph from "./SingleScaleGraph";
+import { LIKE_CUTOFF, DISLIKE_CUTOFF } from "../utils/constants";
 
 export default function ContinuousDecoupled({ itemdata }) {
 
@@ -16,14 +17,15 @@ export default function ContinuousDecoupled({ itemdata }) {
 		if (Object.keys(itemdata).length > 0) {
 			let communityList = [];
 			let userList = [];
-			for (let itemkey of Object.keys(itemdata)) {
+			const items_ = itemdata['movies'];
+			for (let itemkey of Object.keys(items_)) {
 				communityList.push({
-					item_id: itemdata[itemkey].movie_id,
-					score: itemdata[itemkey].community_score
+					item_id: items_[itemkey].movie_id,
+					score: items_[itemkey].community_score
 				});
 				userList.push({
-					item_id: itemdata[itemkey].movie_id,
-					score: itemdata[itemkey].user_score
+					item_id: items_[itemkey].movie_id,
+					score: items_[itemkey].user_score
 				});
 			}
 			setCommunityList(communityList);
@@ -47,7 +49,7 @@ export default function ContinuousDecoupled({ itemdata }) {
 							<SingleScaleGraph key={"user"}
 								graphID={"user_graph"}
 								width={900} height={300}
-								data={userList} dataInfo={itemdata}
+								data={userList} dataInfo={itemdata['movies']}
 								pairingID={"community_graph"}
 								onItemHover={setActiveItem} />
 						</Row>
@@ -57,14 +59,15 @@ export default function ContinuousDecoupled({ itemdata }) {
 							<SingleScaleGraph key={"community"}
 								graphID={"community_graph"}
 								width={900} height={300}
-								data={communityList} dataInfo={itemdata}
+								data={communityList} dataInfo={itemdata['movies']}
 								pairingID={"user_graph"}
 								onItemHover={setActiveItem} />
 						</Row>
 					</Col>
 					<Col lg={3} md={4} sm={12}>
 						<Row style={{ margin: "2em 0 2em 0" }}>
-							<RightPanel movie={itemdata[activeItem]} />
+							<RightPanel movie={itemdata[activeItem]}
+								likeCuttoff={LIKE_CUTOFF} dislikeCuttoff={DISLIKE_CUTOFF} />
 						</Row>
 					</Col>
 				</Row>

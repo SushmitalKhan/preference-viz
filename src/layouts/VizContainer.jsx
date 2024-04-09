@@ -6,13 +6,13 @@ import { useOutletContext } from "react-router-dom";
 import ContinousCoupled from "../components/ContinuousCoupled";
 import ContinousDecoupled from "../components/ContinuousDecoupled";
 import { VizLabels, VizTypes } from "../utils/constants";
+import DiscreteCoupled from "../components/DiscreteCoupled";
 
 
 export function VizContainer() {
 	const recommendations = useOutletContext();
 	const [activeViz, setActiveViz] = useState(VizTypes.CONTINUOUS_COUPLED);
 
-	console.log('vcont', recommendations);
 	return (
 		<Container>
 			<Row style={{backgroundColor: "lightgray"}}>
@@ -41,13 +41,14 @@ export function VizContainer() {
 	)
 }
 
-
 function Visulization({ viztype, data }) {
 	switch (viztype) {
 		case VizTypes.CONTINUOUS_COUPLED:
 			return <ContinousCoupled itemdata={data} />
 		case VizTypes.CONTINUOUS_DECOUPLED:
 			return <ContinousDecoupled itemdata={data} />
+		case VizTypes.DISCRETE_COUPLED:
+			return <DiscreteCoupled itemdata={data} />
 		default:
 			<></>
 

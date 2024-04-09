@@ -19,17 +19,15 @@ const xAxisOffset = posterWidth / 2;
 const yAxisOffset = posterHeight / 2;
 
 const navDotRadius = 5;
-const navDotColor = "rgb(144, 81, 207)"
 
+const navDotColorArray = [`#003f5c`, `#2f4b7c`, `#665191`, `#a05195`, `#d45087`, `#f95d6a`, `#ff7c43`, `#ffa600`];
 
-export default function CartesianGraph({ graphID, width, height, data, dataInfo, xCol, yCol, ...props }) {
+export default function CartesianGraph({ graphID, width, height, data, xCol, yCol, ...props }) {
 
 	const [collision, setCollision] = useState(false);
 	const [navLanes, setNavLanes] = useState(8);
 
 	const [vizVariant, setVizVariant] = useState(1);
-
-	const navLaneXDiv = 20; // We might want to make this dynamic with window size
 
 	useEffect(() => {
 		if (collision) {
@@ -46,22 +44,7 @@ export default function CartesianGraph({ graphID, width, height, data, dataInfo,
 		return (height - svgDrawingBaseline) / (ticksCount - 1);
 	}, [height]);
 
-	const yAugmentedData = useMemo(() => {
-		if (data.length > 0) {
-			let augmentedData = [];
-
-			data.forEach((d, i) => {
-				const cx = (d[xCol] - 1) * xSubdivWidth + xAxisOffset;
-				const cy = (d[yCol] - 1) * ySubdivHeight + yAxisOffset;
-				d.x = cx;
-				d.y = cy;
-				augmentedData.push(d);
-			});
-			return augmentedData;
-		}
-	}, [data, xSubdivWidth, ySubdivHeight, xCol, yCol]);
-
-	const onItemHover = (evt, effect) => {
+	const hoverHandler = (evt, effect) => {
 		let target = evt.target;
 		const item_id = target.getAttribute("item_id");
 		imgHoverEffect(target, effect);
@@ -75,7 +58,7 @@ export default function CartesianGraph({ graphID, width, height, data, dataInfo,
 				const itemY = target.getAttribute("y_val");
 				target = transformImg(target, posterWidth, posterHeight,
 					(itemX - 1) * xSubdivWidth + xAxisOffset,
-					height - (itemY - 1) * ySubdivHeight - yAxisOffset - 2 * svgFontHeight - tickHeight);
+					height - (itemY - 1) * ySubdivHeight - posterHeight - 2 * svgFontHeight - tickHeight);
 				break;
 			case "in":
 				const parent = target.parentNode;
@@ -83,7 +66,6 @@ export default function CartesianGraph({ graphID, width, height, data, dataInfo,
 					target.getAttribute("x") - posterWidth / 2,
 					target.getAttribute("y") - posterHeight / 2);
 				parent.appendChild(target);
-				console.log(target.getAttribute("x_val"), target.getAttribute("y_val"));
 				break;
 			default:
 				break;
@@ -112,88 +94,153 @@ export default function CartesianGraph({ graphID, width, height, data, dataInfo,
 					</ToggleButton>
 				</ToggleButtonGroup>
 			</Row>
-			<svg key={`${graphID}-cc`} id={graphID} width={width} height={height} style={{ margin: "2em" }}>
-				{yAugmentedData.map((d, i) =>
-					vizVariant === 1 ?
-						<image key={`img-${graphID}-cc-${d.item_id}`}
-							id={`img-${graphID}-cc-${d.item_id}`}
-							width={posterWidth} height={posterHeight}
-							x={(d[xCol] - 1) * xSubdivWidth + xAxisOffset}
-							y={height - (d[yCol] - 1) * ySubdivHeight - posterHeight - 2 * svgFontHeight - tickHeight}
-							xlinkHref={imgurl(dataInfo[d.item_id].poster_identifier)}
-							cursor={"pointer"}
-							item_id={d.item_id} x_val={d[xCol]} y_val={d[yCol]}
-							item_type={"img"}
-							onMouseEnter={evt => onItemHover(evt, "in")}
-							onMouseLeave={evt => onItemHover(evt, "out")}
-						/>
-						:
-						<circle key={`circle-${graphID}-cc-${d.item_id}`}
-							id={`circle-${graphID}-cc-${d.item_id}`}
-							cx={(d[xCol] - 1) * xSubdivWidth + xAxisOffset}
-							cy={height - (d[yCol] - 1) * ySubdivHeight - posterHeight - 2 * svgFontHeight - tickHeight}
-							r={navDotRadius} fill={navDotColor}
-							cursor={"pointer"}
-							item_id={d.item_id} item_score={d.score}
-							item_type={"nav"}
-							onMouseEnter={evt => onItemHover(evt, "in")}
-							onMouseLeave={evt => onItemHover(evt, "out")} />
+			{vizVariant === 1 ?
+				<ImageGraph data={data} graphID={graphID} width={width} height={height}
+					xSubdivWidth={xSubdivWidth} ySubdivHeight={ySubdivHeight}
+					xCol={xCol} yCol={yCol} hoverCallback={hoverHandler} />
+				:
+				<DotGraph data={data} graphID={graphID} width={width} height={height}
+					xSubdivWidth={xSubdivWidth} ySubdivHeight={ySubdivHeight}
+					xCol={xCol} yCol={yCol} hoverCallback={hoverHandler} />
+			}
+		</>
 
-				)}
-				<line key={`${graphID}-cc-xAxis`}
-					x1={xAxisOffset} y1={height - svgFontHeight * 2}
-					x2={width - xAxisOffset} y2={height - svgFontHeight * 2}
-					style={{ stroke: svgTicksColor, strokeWidth: "2" }} />
-				{
-					[...Array(ticksCount).keys()].map(i =>
-						<line key={`xAxis-${graphID}-cc-${i}`}
-							x1={(i) * xSubdivWidth + xAxisOffset}
-							y1={height - svgFontHeight * 2}
-							x2={(i) * xSubdivWidth + xAxisOffset}
-							y2={height - tickHeight - svgFontHeight * 2}
-							style={{
-								stroke: svgTicksColor, strokeWidth: "2"
-							}} />
-					)}
-				{[...Array(ticksCount).keys()].map(i =>
-					<text key={`xAxisLabel-${graphID}-cc-${i}`}
-						x={(i) * xSubdivWidth + xAxisOffset}
-						y={height - svgFontHeight}
-						textAnchor="middle" fill={svgTicksColor}
-						fontSize={svgFontHeight}>
-						{i + 1}
-					</text>
+	)
+}
 
-				)
-				}
-				<line key={`${graphID}-cc-yAxis`}
-					x1={parseInt(xAxisOffset / 2)} y1={height - svgFontHeight * 2 - tickHeight}
-					x2={parseInt(xAxisOffset / 2)} y2={svgFontHeight * 2 + tickHeight}
-					style={{ stroke: svgTicksColor, strokeWidth: "2" }} />
-				{
-					[...Array(ticksCount).keys()].map(i =>
-						<line key={`yAxis-${graphID}-cc-${i}`}
-							x1={parseInt(xAxisOffset / 2)}
-							y1={height - (i) * ySubdivHeight - 3 * svgFontHeight}
-							x2={parseInt(xAxisOffset / 2) + tickHeight}
-							y2={height - (i) * ySubdivHeight - 3 * svgFontHeight}
-							style={{
-								stroke: svgTicksColor, strokeWidth: "2"
-							}} />
-					)}
-				{[...Array(ticksCount).keys()].map(i =>
-					<text key={`yAxisLabel-${graphID}-cc-${i}`}
-						x={parseInt(xAxisOffset / 2) - tickHeight}
-						y={height - (i) * ySubdivHeight - 3 * svgFontHeight}
-						textAnchor="middle" fill={svgTicksColor}
-						fontSize={svgFontHeight}>
-						{i + 1}
-					</text>
-				)
-				}
-				<defs className="itemImg">
-				</defs>
-			</svg >
+
+function ImageGraph({ data, graphID, width, height, xCol, yCol, xSubdivWidth, ySubdivHeight, hoverCallback }) {
+	return (
+		<svg key={`${graphID}-cc`} id={graphID} width={width} height={height}>
+			<Grid width={width} height={height} xSubdivWidth={xSubdivWidth} ySubdivHeight={ySubdivHeight} />
+			{Object.entries(data).map((d, i) =>
+				<image key={`img-${graphID}-cc-${d[1].movie_id}`}
+					id={`img-${graphID}-cc-${d[1].movie_id}`}
+					width={posterWidth} height={posterHeight}
+					x={(d[1][xCol] - 1) * xSubdivWidth + xAxisOffset}
+					y={height - (d[1][yCol] - 1) * ySubdivHeight - posterHeight - 2 * svgFontHeight - tickHeight}
+					xlinkHref={imgurl(d[1].poster_identifier)}
+					cursor={"pointer"}
+					item_id={d[1].movie_id} x_val={d[1][xCol]} y_val={d[1][yCol]}
+					item_type={"img"}
+					onMouseEnter={evt => hoverCallback(evt, "in")}
+					onMouseLeave={evt => hoverCallback(evt, "out")}
+				/>
+			)}
+			<XAxis graphID={graphID} width={width} height={height} xSubdivWidth={xSubdivWidth} />
+			<YAxis graphID={graphID} width={width} height={height} ySubdivHeight={ySubdivHeight} />
+			<defs className="itemImg"></defs>
+		</svg >
+	)
+}
+
+function DotGraph({ data, graphID, width, height, xCol, yCol, xSubdivWidth, ySubdivHeight, hoverCallback }) {
+	return (
+		<svg key={`${graphID}-cc`} id={graphID} width={width} height={height}>
+			<Grid width={width} height={height} xSubdivWidth={xSubdivWidth} ySubdivHeight={ySubdivHeight} />
+			{Object.entries(data).map((d, i) =>
+				<circle key={`circle-${graphID}-cc-${d[1].movie_id}`}
+					id={`circle-${graphID}-cc-${d[1].movie_id}`}
+					cx={(d[1][xCol] - 1) * xSubdivWidth + xAxisOffset + posterWidth / 2}
+					cy={height - (d[1][yCol] - 1) * ySubdivHeight - posterHeight - 2 * svgFontHeight - tickHeight + posterHeight / 2}
+					r={navDotRadius} fill={navDotColorArray[parseInt(d[1].cluster) % 8]}
+					cursor={"pointer"}
+					item_id={d[1].movie_id} item_score={d[1].score}
+					item_type={"nav"}
+					onMouseEnter={evt => hoverCallback(evt, "in")}
+					onMouseLeave={evt => hoverCallback(evt, "out")} />
+			)}
+			<XAxis graphID={graphID} width={width} height={height} xSubdivWidth={xSubdivWidth} />
+			<YAxis graphID={graphID} width={width} height={height} ySubdivHeight={ySubdivHeight} />
+			<defs className="itemImg"></defs>
+		</svg >
+	)
+}
+
+function XAxis({ graphID, width, height, xSubdivWidth }) {
+	return (
+		<>
+			<line key={`${graphID}-cc-xAxis`}
+				x1={xAxisOffset} y1={height - svgFontHeight * 2}
+				x2={width - xAxisOffset} y2={height - svgFontHeight * 2}
+				style={{ stroke: svgTicksColor, strokeWidth: "2" }} />
+			{[...Array(ticksCount).keys()].map(i =>
+				<line key={`xAxis-${graphID}-cc-${i}`}
+					x1={(i) * xSubdivWidth + xAxisOffset}
+					y1={height - svgFontHeight * 2}
+					x2={(i) * xSubdivWidth + xAxisOffset}
+					y2={height - tickHeight - svgFontHeight * 2}
+					style={{
+						stroke: svgTicksColor, strokeWidth: "2"
+					}} />
+			)}
+			{[...Array(ticksCount).keys()].map(i =>
+				<text key={`xAxisLabel-${graphID}-cc-${i}`}
+					x={(i) * xSubdivWidth + xAxisOffset}
+					y={height - svgFontHeight}
+					textAnchor="middle" fill={svgTicksColor}
+					fontSize={svgFontHeight}>
+					{i + 1}
+				</text>
+
+			)}
+		</>
+	)
+}
+
+function YAxis({ graphID, height, ySubdivHeight }) {
+	return (
+		<>
+			<line key={`${graphID}-cc-yAxis`}
+				x1={parseInt(xAxisOffset / 2)} y1={height - svgFontHeight * 2 - tickHeight}
+				x2={parseInt(xAxisOffset / 2)} y2={svgFontHeight * 2 + tickHeight}
+				style={{ stroke: svgTicksColor, strokeWidth: "2" }} />
+			{[...Array(ticksCount).keys()].map(i =>
+				<line key={`yAxis-${graphID}-cc-${i}`}
+					x1={parseInt(xAxisOffset / 2)}
+					y1={height - (i) * ySubdivHeight - 3 * svgFontHeight}
+					x2={parseInt(xAxisOffset / 2) + tickHeight}
+					y2={height - (i) * ySubdivHeight - 3 * svgFontHeight}
+					style={{
+						stroke: svgTicksColor, strokeWidth: "2"
+					}} />
+			)}
+			{[...Array(ticksCount).keys()].map(i =>
+				<text key={`yAxisLabel-${graphID}-cc-${i}`}
+					x={parseInt(xAxisOffset / 2) - tickHeight}
+					y={height - (i) * ySubdivHeight - 3 * svgFontHeight}
+					textAnchor="middle" fill={svgTicksColor}
+					fontSize={svgFontHeight}>
+					{i + 1}
+				</text>
+			)}
+		</>
+	)
+}
+
+function Grid({ width, height, xSubdivWidth, ySubdivHeight }) {
+	return (
+		<>
+			{[...Array((ticksCount * 8) + 1).keys()].map(i =>
+				<line key={`xGrid-${i}`}
+					x1={xAxisOffset + (i * xSubdivWidth / 10)}
+					y1={svgFontHeight * 2 + tickHeight * 2}
+					x2={xAxisOffset + (i * xSubdivWidth / 10)}
+					y2={height - svgFontHeight * 2 - tickHeight}
+					style={{
+						stroke: svgTicksColor, strokeWidth: "0.5"
+					}} />
+			)}
+			{[...Array((ticksCount * 8) + 1).keys()].map(i =>
+				<line key={`xGrid-${i}`}
+					x1={xAxisOffset}
+					y1={svgFontHeight * 2 + tickHeight * 2 + i * (ySubdivHeight / 10)}
+					x2={width - xAxisOffset}
+					y2={svgFontHeight * 2 + tickHeight * 2 + i * (ySubdivHeight / 10)}
+					style={{
+						stroke: svgTicksColor, strokeWidth: "0.5"
+					}} />
+			)}
 		</>
 	)
 }

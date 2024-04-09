@@ -6,11 +6,13 @@ import {
 	createBrowserRouter,
 	createRoutesFromElements
 } from "react-router-dom";
+import "../styles/main.css";
 
-import { VizContainer } from "./VizContainer";
+
 import HomePage from "../pages/HomePage";
 import MovieRatingPage from "../pages/MovieRatingPage";
 import VisualizationLayout from "./VisualizationLayout";
+import { VizContainer } from "./VizContainer";
 
 export default function App() {
 	return (

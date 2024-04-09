@@ -137,11 +137,9 @@ header {
 .discretecouplebox {
   border-bottom-style: solid;
   border-left-style: solid;
-  width: fit-content;
 }
 
 .dataholderitem:hover {
-  width: fit-content;
   height: 100px;
   z-index: 999;
   box-shadow: 0.25em 0.25em 0 0;
@@ -153,7 +151,6 @@ header {
 }
 
 .dataholderitemClicked {
-  width: fit-content;
   height: 100px;
   z-index: 999;
   box-shadow: 0.25em 0.25em 0 0;

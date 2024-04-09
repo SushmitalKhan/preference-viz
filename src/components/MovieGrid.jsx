@@ -37,7 +37,6 @@ export default function MovieGrid({ movieIds, itemsPerPage,
 
 	useEffect(() => {
 		pickRandomMovies(movieIds);
-		console.log("call pickrandom");
 	}, [movieIds])
 
 	const updateCurrentPage = (page) => {
